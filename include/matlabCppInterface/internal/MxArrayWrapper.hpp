@@ -95,9 +95,11 @@ private:
 	template<> void MxArrayWrapper<double>::convertFrom(const double& content) { convertFromScalar(static_cast<double>(content), _mxArray); }
 	template<> void MxArrayWrapper<float>::convertFrom(const float& content) { convertFromScalar(static_cast<double>(content), _mxArray); }
 	template<> void MxArrayWrapper<int>::convertFrom(const int& content) { convertFromScalar(static_cast<double>(content), _mxArray); }
-	template<> void MxArrayWrapper<bool>::convertFrom(const bool& content) { convertFromScalar(static_cast<bool>(content), _mxArray); }
 
-
+	template<> void MxArrayWrapper<bool>::convertFrom(const bool& content)
+	{
+		_mxArray = mxCreateLogicalScalar(content);
+	}
 
 	template<> void MxArrayWrapper<std::string>::convertFrom(const std::string& content)
 	{
