@@ -8,6 +8,7 @@
 
 #include <matlabCppInterface/internal/helpers.hpp>
 #include <matlabCppInterface/internal/MxArrayWrapper.hpp>
+#include <matlabCppInterface/internal/MxArrayNDimWrapper.hpp>
 
 #include <engine.h>
 
@@ -129,6 +130,12 @@ public:
   template <typename ValueType>
   bool get(const std::string& name, ValueType& rValue);
 
+  template <typename ValueType, typename AllocatorType>
+  bool put(const std::string& name, const std::vector<ValueType, AllocatorType>& value);
+
+  template <typename ValueType, typename AllocatorType>
+  bool get(const std::string& name, std::vector<ValueType, AllocatorType>& rValue);
+
 
 
 private:
@@ -177,6 +184,45 @@ bool Engine::get(const std::string& name, ValueType& rValue)
 	mxArrayWrapped.get(rValue);
 	return true;
 }
+
+
+
+template <typename ValueType, typename AllocatorType>
+bool Engine::put(const std::string& name, const std::vector<ValueType, AllocatorType>& value)
+{
+	assertIsInitialized();
+	helpers::assertValidVariableName(name);
+
+	MxArrayNDimWrapper<ValueType, AllocatorType> mxArray(value);
+
+	// send data and verify
+	int success = engPutVariable(_engine, name.c_str(), mxArray.mxArrayPtr());
+	if (success == 0)
+	{
+		return true;
+	}
+	return false;
+}
+
+
+template <typename ValueType, typename AllocatorType>
+bool Engine::get(const std::string& name, std::vector<ValueType, AllocatorType>& rValue)
+{
+	assertIsInitialized();
+	helpers::assertValidVariableName(name);
+
+	// Get variable from matlab
+	MxArrayNDimWrapper<ValueType, AllocatorType> mxArrayNDimWrapped;
+	mxArrayNDimWrapped.mxArrayPtr() = engGetVariable(_engine, name.c_str());
+	if(mxArrayNDimWrapped.mxArrayPtr() == NULL)
+	{
+		return false;
+	}
+
+	mxArrayNDimWrapped.get(rValue);
+	return true;
+}
+
 
 } // namespace matlab
   

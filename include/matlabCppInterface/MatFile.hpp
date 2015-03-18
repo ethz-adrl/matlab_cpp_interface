@@ -12,6 +12,7 @@
 
 #include <matlabCppInterface/internal/helpers.hpp>
 #include <matlabCppInterface/internal/MxArrayWrapper.hpp>
+#include <matlabCppInterface/internal/MxArrayNDimWrapper.hpp>
 
 #include <mat.h>
 
@@ -52,6 +53,12 @@ public:
 
 	template <typename ValueType>
 	bool get(const std::string& name, ValueType& rValue);
+
+	template <typename ValueType, typename AllocatorType>
+	bool put(const std::string& name, const std::vector<ValueType, AllocatorType>& value, bool globalVariable = false);
+
+	template <typename ValueType, typename AllocatorType>
+	bool get(const std::string& name, std::vector<ValueType, AllocatorType>& rValue);
 
 	bool deleteVariable(const std::string& name);
 
@@ -100,6 +107,7 @@ template <typename ValueType>
 bool MatFile::get(const std::string& name, ValueType& rValue)
 {
 	if (!_isOpen) { return false; }
+	helpers::assertValidVariableName(name);
 
 	// Get variable from matlab
 	MxArrayWrapper<ValueType> mxArray;
@@ -107,8 +115,60 @@ bool MatFile::get(const std::string& name, ValueType& rValue)
 
 	mxArray.get(rValue);
 
+	if(mxArray.mxArrayPtr() == NULL)
+	{
+		return false;
+	}
+
 	return true;
 }
+
+template <typename ValueType, typename AllocatorType>
+bool MatFile::put(const std::string& name, const std::vector<ValueType, AllocatorType>& value, bool globalVariable)
+{
+	if (!_isOpen) { return false; }
+	helpers::assertValidVariableName(name);
+
+	MxArrayNDimWrapper<ValueType, AllocatorType> mxArray(value);
+
+	// send data and verify
+	int success = -1;
+	if (globalVariable)
+	{
+		success = matPutVariableAsGlobal(_file, name.c_str(), mxArray.mxArrayPtr());
+	} else
+	{
+		success = matPutVariable(_file, name.c_str(), mxArray.mxArrayPtr());
+	}
+
+	if (success == 0)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+
+template <typename ValueType, typename AllocatorType>
+bool MatFile::get(const std::string& name, std::vector<ValueType, AllocatorType>& rValue)
+{
+	if (!_isOpen) { return false; }
+	helpers::assertValidVariableName(name);
+
+	// Get variable from matlab
+	MxArrayNDimWrapper<ValueType, AllocatorType> mxArrayNDimWrapped;
+	mxArrayNDimWrapped.mxArrayPtr() = matGetVariable(_file, name.c_str());
+
+	if(mxArrayNDimWrapped.mxArrayPtr() == NULL)
+	{
+		return false;
+	}
+
+	mxArrayNDimWrapped.get(rValue);
+	return true;
+}
+
 
 }
 

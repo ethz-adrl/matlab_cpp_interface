@@ -8,8 +8,6 @@
 #ifndef MXARRAYWRAPPER_HPP_
 #define MXARRAYWRAPPER_HPP_
 
-#include <type_traits>
-
 #include <Eigen/Core>
 
 #include "matrix.h"

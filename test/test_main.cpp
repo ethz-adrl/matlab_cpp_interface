@@ -21,5 +21,6 @@ int main(int argc, char **argv){
 	std::cout<<"Starting mat-file test"<<std::endl;
 	testOpenClose();
 	testWriteRead();
+	testWriteEigen();
 	std::cout<<"Completed mat-file test"<<std::endl;
 }
