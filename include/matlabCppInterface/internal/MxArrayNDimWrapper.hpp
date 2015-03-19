@@ -87,8 +87,6 @@ void MxArrayNDimWrapper<ContentType, AllocatorType>::convertFrom(const std::vect
 
 	for (size_t i=0; i<content.size(); i++)
 	{
-		std::cout<<"adding matrix at layer "<<i<<std::endl;
-
 		if (content[i].rows() != dims[0] || content[i].cols() != dims[1])
 		{
 			throw "Not all matrices in vector are of equal size.";

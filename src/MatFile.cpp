@@ -37,7 +37,7 @@ MatFile::~MatFile()
 // [in] ioFlag - either 'r' for read, 'w' for write or 'u' for update (read/write)
 bool MatFile::open(const std::string& filename, OPEN_MODE mode)
 {
-	if (_file != NULL) { matClose(_file); }
+	if (_file) { std::cout<<"Warning, file already open, will close."<<std::endl; matClose(_file); }
 
 	std::string ioflags = "";
 	_isWritable = true;

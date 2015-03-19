@@ -14,7 +14,7 @@
 namespace matlab {
 namespace helpers {
 
-void assertValidVariableName(const std::string& name)
+inline void assertValidVariableName(const std::string& name)
 {
 	// Maybe better use regular expressions here?
 	assert(name.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_") == std::string::npos && "Illegal character in Variable name");

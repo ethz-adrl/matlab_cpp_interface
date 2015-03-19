@@ -31,14 +31,14 @@ public:
 
 	MatFile();
 
-	MatFile(const std::string& filename, OPEN_MODE mode);
+	MatFile(const std::string& filename, OPEN_MODE mode = WRITE_COMPRESSED);
 
 	~MatFile();
 
 	// open a mat file
 	// [in] string - filename
 	// [in] ioFlag - either 'r' for read, 'w' for write or 'u' for update (read/write)
-	bool open(const std::string& filename, OPEN_MODE mode);
+	bool open(const std::string& filename, OPEN_MODE mode = WRITE_COMPRESSED);
 
 	bool isOpen() { return _isOpen; }
 

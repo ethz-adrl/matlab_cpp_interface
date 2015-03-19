@@ -7,7 +7,7 @@ project(matlab_cpp_interface)
 find_package(catkin REQUIRED)
 
 set(CMAKE_CXX_FLAGS "-Wfatal-errors -Wall --std=c++11")
-set(CMAKE_BUILD_TYPE DEBUG)
+set(CMAKE_BUILD_TYPE RELEASE)
 
 ## System dependencies are found with CMake's conventions
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
@@ -100,6 +100,10 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   ${MATLAB_INCLUDE_DIR}
   )
+  
+add_library(mxArrayWrapper
+    src/internal/MxArrayWrapper.cpp
+)
 
 ## Declare a cpp library
 add_library(matlabMatFile
@@ -118,16 +122,19 @@ add_executable(matlabTest test/test_main.cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(matlabMatFile
+    mxArrayWrapper
     ${MATLAB_LIBRARIES}
 )
 
 target_link_libraries(matlabEngine
+    mxArrayWrapper
     ${MATLAB_LIBRARIES}
 )
 
 target_link_libraries(matlabTest
   matlabMatFile
   matlabEngine
+  mxArrayWrapper
   ${MATLAB_LIBRARIES}
 )
 

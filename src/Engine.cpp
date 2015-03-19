@@ -31,7 +31,7 @@ Engine::Engine(std::string hostename)
 {
 	// it would be possible to run Matlab on a different Machine under Linux
 	// due to time constraints and lack of need, this is not implemnted yet
-	SM_THROW(std::runtime_error, "Not implemented!");
+	assert(true && "Not implemented!");
 }
 #endif
 
