@@ -6,7 +6,7 @@ project(matlab_cpp_interface)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED)
 
-set(CMAKE_CXX_FLAGS "-Wfatal-errors -Wall --std=c++11")
+set(CMAKE_CXX_FLAGS "--std=c++11")
 set(CMAKE_BUILD_TYPE RELEASE)
 
 ## System dependencies are found with CMake's conventions
@@ -82,7 +82,7 @@ find_package(Eigen REQUIRED)
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
    INCLUDE_DIRS include ${MATLAB_INCLUDE_DIR} ${EIGEN_INCLUDE_DIRS}
-   LIBRARIES matlabMatFile matlabEngine
+   LIBRARIES matlabMatFile matlabEngine ${MATLAB_LIBRARIES}
 #  CATKIN_DEPENDS other_catkin_pkg
 #  DEPENDS system_lib
 )
