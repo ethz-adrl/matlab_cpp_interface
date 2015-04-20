@@ -31,7 +31,7 @@ Engine::Engine(std::string hostename)
 {
 	// it would be possible to run Matlab on a different Machine under Linux
 	// due to time constraints and lack of need, this is not implemnted yet
-	assert(true && "Not implemented!");
+	throw std::runtime_error("Not implemented!");
 }
 #endif
 
@@ -40,7 +40,7 @@ Engine::~Engine()
 	if (_engine!=NULL)
 	{
 		int success = engClose(_engine);
-		assert(success == 0 && "Closing Matlab was not possible. Maybe already closed.");
+		if(success != 0) throw(std::runtime_error("Closing Matlab was not possible. Maybe already closed."));
 	}
 }
 
@@ -118,6 +118,7 @@ std::string Engine::changeWorkingDirectory(const std::string& directory)
 
 void Engine::openCommandLine()
 {
+	assertIsInitialized();
 	// Display info
 	std::cout<<"Enter a MATLAB command to evaluate."<<std::endl;
 	std::cout<<"Type 'quit' or 'exit' to leave command line mode"<<std::endl;
@@ -152,6 +153,7 @@ void Engine::openCommandLine()
 
   bool Engine::exists(const std::string& name)
   {
+	assertIsInitialized();
 	helpers::assertValidVariableName(name);
 	// Get variable from matlab
 	mxArray* mxArray = engGetVariable(_engine, name.c_str());
@@ -213,7 +215,7 @@ void Engine::openCommandLine()
 
 void Engine::assertIsInitialized() const
 {
-	assert(_engine != NULL && "Matlab Engine is not initialized");
+	if(_engine == NULL) throw std::runtime_error("Matlab Engine is not initialized");
 }
 
 
