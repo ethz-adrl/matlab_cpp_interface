@@ -8,8 +8,11 @@
 #ifndef MXARRAYWRAPPER_HPP_
 #define MXARRAYWRAPPER_HPP_
 
+#include <type_traits>
+
 #include <Eigen/Core>
 
+// Matlab's mxArray stuff
 #include "matrix.h"
 
 namespace matlab {
@@ -77,7 +80,7 @@ private:
 
 		_mxArray = mxCreateDoubleMatrix(matrix.rows(), matrix.cols(), mxREAL);
 
-		assert(mxGetElementSize(_mxArray) == sizeof(double) && "Data types do not match");
+		static_assert(std::is_same<typename ContentType::Scalar, double>::value, "YOU ARE TRYING TO PUT A TYPE THAT IS NOT SUPPORTED BY THE INTERFACE. MAYBE YOU ARE TRYING TO PUT AN EIGEN MATRIX/VECTOR WITH A SCALAR TYPE THAT IS NOT DOUBLE.");
 
 	    // get pointer to _mxArray and copy over data
 		double* _mxArrayData = mxGetPr(_mxArray);
@@ -96,7 +99,18 @@ private:
 
 	template<> void MxArrayWrapper<std::string>::convertFrom(const std::string& content);
 
+
+	// General template to catch non-supported types
+	class FalseType {};
+	template <typename ContentType>
+	void MxArrayWrapper<ContentType>::convertTo(ContentType& content)
+	{
+		static_assert(std::is_same<ContentType, FalseType>::value, "YOU ARE TRYING TO GET A TYPE THAT IS NOT SUPPORTED BY THE INTERFACE. MAYBE YOU ARE TRYING TO GET AN EIGEN MATRIX/VECTOR WITH FIXED SIZE OR WITH A SCALAR TYPE THAT IS NOT DOUBLE.");
+	}
+
+	// General template specialization for Eigen
 	template<> void MxArrayWrapper<Eigen::MatrixXd>::convertTo(Eigen::MatrixXd& content);
+	template<> void MxArrayWrapper<Eigen::VectorXd>::convertTo(Eigen::VectorXd& content);
 
 	// General template for scalars
 	double convertToScalar(const mxArray* mxArray);

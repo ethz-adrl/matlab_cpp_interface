@@ -148,30 +148,24 @@ void testWriteEigen()
 	assert(file.isOpen());
 	assert(!file.isWritable());
 	Eigen::MatrixXd a_test(2, 2);
-	Eigen::Vector3i b_test;
+	//Eigen::Vector3i b_test;
 	std::vector<Eigen::MatrixXd> a_vec_test(2);
-	std::vector<Eigen::Vector3i, Eigen::aligned_allocator<Eigen::Vector3i> > b_vec_test(2);
+	//std::vector<Eigen::Vector3i, Eigen::aligned_allocator<Eigen::Vector3i> > b_vec_test(2);
 
 	assert(file.get("a", a_test));
 	//assert(file.get("b", b_test));
 	assert(file.get("a_vec", a_vec_test));
-	assert(file.get("b_vec", b_vec_test));
+	//assert(file.get("b_vec", b_vec_test));
 
 	assert(a == a_test);
 	//assert(b == b_test);
 
 	assert(a_vec.size() == a_vec_test.size());
-	assert(b_vec.size() == b_vec_test.size());
+	//assert(b_vec.size() == b_vec_test.size());
 
 	for (size_t i=0; i<a_vec.size(); i++)
 	{
-		std::cout<<"a_vec["<<i<<"]:"<<std::endl<<a_vec[i]<<std::endl;
-		std::cout<<"a_vec_test["<<i<<"]:"<<std::endl<<a_vec_test[i]<<std::endl;
 		assert(a_vec[i] == a_vec_test[i]);
-	}
-	for (size_t i=0; i<b_vec.size(); i++)
-	{
-		assert(b_vec[i] == b_vec_test[i]);
 	}
 
 	assert(file.close());

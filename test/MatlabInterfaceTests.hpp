@@ -51,11 +51,11 @@ void testPutEigen()
   engine.initialize();
 
   Eigen::Matrix2d A = Eigen::Matrix2d::Random();
-  Eigen::Matrix3i B = Eigen::Matrix3i::Random();
+  //Eigen::Matrix3i B = Eigen::Matrix3i::Random();
   Eigen::Vector3d C = Eigen::Vector3d::Random();
   
   engine.put("A", A);
-  engine.put("B", B);
+  //engine.put("B", B);
   engine.put("C", C);
 
   std::cout<<"Finished eigen type putting"<<std::endl;
@@ -98,12 +98,12 @@ void testGetEigen()
   engine.initialize();
   
   Eigen::Matrix3d A = Eigen::Matrix3d::Random();
-  Eigen::Matrix3i B = Eigen::Matrix3i::Random();
+  //Eigen::Matrix3i B = Eigen::Matrix3i::Random();
   Eigen::Matrix3d C = Eigen::Matrix3d::Random();
   Eigen::Vector2d D = Eigen::Vector2d::Random();
   
   engine.put("A", A);
-  engine.put("B", B);
+  //engine.put("B", B);
   engine.put("C", C);
   engine.put("D", D);
   
@@ -113,9 +113,14 @@ void testGetEigen()
   engine.get("AC", ACTest);
   assert(ACTest == AC);
 
-  Eigen::MatrixXd DTest;
+  Eigen::VectorXd DTest;
   engine.get("D", DTest);
   assert(DTest == D);
+
+  Eigen::VectorXd DTransposeTest;
+  engine.executeCommand("DTranspose = D';");
+  engine.get("DTranspose", DTransposeTest);
+  assert(DTransposeTest == D);
 
   std::cout<<"Finished eigen type putting/getting"<<std::endl;
 }

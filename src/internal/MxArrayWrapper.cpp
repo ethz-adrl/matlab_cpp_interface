@@ -32,9 +32,9 @@ template<> void MxArrayWrapper<std::string>::convertFrom(const std::string& cont
 
 template<> void MxArrayWrapper<Eigen::MatrixXd>::convertTo(Eigen::MatrixXd& content)
 {
-	assert(mxIsNumeric(_mxArray) && "Variable is not numeric");
-	assert(!mxIsEmpty(_mxArray) && "Variable is empty!");
-	assert(mxGetNumberOfDimensions(_mxArray) == 2 && "Variable is 2-dimensional");
+	if(!mxIsNumeric(_mxArray)) throw std::runtime_error("Variable is not numeric");
+	if(mxIsEmpty(_mxArray)) throw std::runtime_error("Variable is empty!");
+	if(mxGetNumberOfDimensions(_mxArray) != 2) throw std::runtime_error("Variable is 2-dimensional");
 
 	size_t rows = mxGetM(_mxArray);
 	size_t cols = mxGetN(_mxArray);
@@ -43,7 +43,26 @@ template<> void MxArrayWrapper<Eigen::MatrixXd>::convertTo(Eigen::MatrixXd& cont
 
 	void* _mxArrayData = mxGetData(_mxArray);
 
-	assert(sizeof(content(0,0)) == mxGetElementSize(_mxArray) && "Datatype does not match");
+	if(sizeof(content(0,0)) != mxGetElementSize(_mxArray)) throw std::runtime_error("Datatype does not match");
+	std::memcpy(content.data(), _mxArrayData, mxGetElementSize(_mxArray)*mxGetNumberOfElements(_mxArray));
+}
+
+template<> void MxArrayWrapper<Eigen::VectorXd>::convertTo(Eigen::VectorXd& content)
+{
+	if(!mxIsNumeric(_mxArray)) throw std::runtime_error("Variable is not numeric");
+	if(mxIsEmpty(_mxArray)) throw std::runtime_error("Variable is empty!");
+	if(mxGetNumberOfDimensions(_mxArray) != 2) throw std::runtime_error("Variable is 2-dimensional");
+
+	size_t rows = mxGetM(_mxArray);
+	size_t cols = mxGetN(_mxArray);
+
+	if (rows != 1 && cols != 1) throw std::runtime_error("Variable is not a vector!");
+
+	content.resize(std::max(rows, cols));
+
+	void* _mxArrayData = mxGetData(_mxArray);
+
+	if(sizeof(content(0)) != mxGetElementSize(_mxArray)) throw std::runtime_error("Datatype does not match");
 	std::memcpy(content.data(), _mxArrayData, mxGetElementSize(_mxArray)*mxGetNumberOfElements(_mxArray));
 }
 
@@ -52,9 +71,9 @@ template<> void MxArrayWrapper<Eigen::MatrixXd>::convertTo(Eigen::MatrixXd& cont
 double convertToScalar(const mxArray* mxArray)
 {
 	// Check type
-	assert(mxIsNumeric(mxArray) && "Variable is not numeric (normally scalars are stored as doubles in Matlab)");
-	assert(!mxIsEmpty(mxArray) && "Variable is empty!");
-	assert(mxGetNumberOfElements(mxArray) == 1 && "Variable is not a scalar (has more than 1 element)");
+	if(!mxIsNumeric(mxArray)) throw std::runtime_error("Variable is not numeric (normally scalars are stored as doubles in Matlab)");
+	if(mxIsEmpty(mxArray)) throw std::runtime_error("Variable is empty!");
+	if(mxGetNumberOfElements(mxArray) != 1) throw std::runtime_error("Variable is not a scalar (has more than 1 element)");
 
 	// read data
 	return mxGetScalar(mxArray);
@@ -68,9 +87,9 @@ template<> void MxArrayWrapper<size_t>::convertTo(size_t& content) { content = s
 template<> void MxArrayWrapper<bool>::convertTo(bool& content)
 {
 	// Check type
-	assert(mxIsLogical(_mxArray) && "Variable is not of boolean type");
-	assert(!mxIsEmpty(_mxArray) && "Variable is empty!");
-	assert(mxGetNumberOfElements(_mxArray) ==1 && "Variable is not a scalar (has more than 1 element)");
+	if(!mxIsLogical(_mxArray)) throw std::runtime_error("Variable is not of boolean type");
+	if(mxIsEmpty(_mxArray)) throw std::runtime_error("Variable is empty!");
+	if(mxGetNumberOfElements(_mxArray) !=1) throw std::runtime_error("Variable is not a scalar (has more than 1 element)");
 
 	// read data
 	content = mxIsLogicalScalarTrue(_mxArray);
@@ -79,8 +98,8 @@ template<> void MxArrayWrapper<bool>::convertTo(bool& content)
 template<> void MxArrayWrapper<std::string>::convertTo(std::string& content)
 {
 	// Check type
-	assert(!mxIsEmpty(_mxArray) && "Variable is empty!");
-	assert(mxIsChar(_mxArray) && "Variable is not a character/string");
+	if(mxIsEmpty(_mxArray)) throw std::runtime_error("Variable is empty!");
+	if(!mxIsChar(_mxArray)) throw std::runtime_error("Variable is not a character/string");
 
 	// read data
 	// lenght + 1 because of 0 terminated string
