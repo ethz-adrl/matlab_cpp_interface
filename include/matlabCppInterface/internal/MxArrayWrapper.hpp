@@ -75,16 +75,13 @@ private:
 	template <typename ContentType>
 	void MxArrayWrapper<ContentType>::convertFrom(const ContentType& content)
 	{
-		// if this throws an error your type is probably not implemented and the code tries to fall back to Eigen...
-		Eigen::MatrixXd matrix = content.template cast<double>();
-
-		_mxArray = mxCreateDoubleMatrix(matrix.rows(), matrix.cols(), mxREAL);
+		_mxArray = mxCreateDoubleMatrix(content.rows(), content.cols(), mxREAL);
 
 		static_assert(std::is_same<typename ContentType::Scalar, double>::value, "YOU ARE TRYING TO PUT A TYPE THAT IS NOT SUPPORTED BY THE INTERFACE. MAYBE YOU ARE TRYING TO PUT AN EIGEN MATRIX/VECTOR WITH A SCALAR TYPE THAT IS NOT DOUBLE.");
 
 	    // get pointer to _mxArray and copy over data
 		double* _mxArrayData = mxGetPr(_mxArray);
-		memcpy(_mxArrayData, matrix.data(), matrix.size()*sizeof(double));
+		memcpy(_mxArrayData, content.data(), content.size()*sizeof(double));
 	}
 
 
