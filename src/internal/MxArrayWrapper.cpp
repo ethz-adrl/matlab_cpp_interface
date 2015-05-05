@@ -18,7 +18,7 @@ void convertFromScalar(const double& value, mxArray* &mxArray)
 template<> void MxArrayWrapper<double>::convertFrom(const double& content) { convertFromScalar(static_cast<double>(content), _mxArray); }
 template<> void MxArrayWrapper<float>::convertFrom(const float& content) { convertFromScalar(static_cast<double>(content), _mxArray); }
 template<> void MxArrayWrapper<int>::convertFrom(const int& content) { convertFromScalar(static_cast<double>(content), _mxArray); }
-template<> void MxArrayWrapper<size_t>::convertFrom(const size_t& content) { convertFromScalar(static_cast<size_t>(content), _mxArray); }
+template<> void MxArrayWrapper<size_t>::convertFrom(const size_t& content) { convertFromScalar(static_cast<double>(content), _mxArray); }
 
 template<> void MxArrayWrapper<bool>::convertFrom(const bool& content)
 {
@@ -34,7 +34,7 @@ template<> void MxArrayWrapper<Eigen::MatrixXd>::convertTo(Eigen::MatrixXd& cont
 {
 	if(!mxIsNumeric(_mxArray)) throw std::runtime_error("Variable is not numeric");
 	if(mxIsEmpty(_mxArray)) throw std::runtime_error("Variable is empty!");
-	if(mxGetNumberOfDimensions(_mxArray) != 2) throw std::runtime_error("Variable is 2-dimensional");
+	if(mxGetNumberOfDimensions(_mxArray) != 2) throw std::runtime_error("Variable is not 2-dimensional");
 
 	size_t rows = mxGetM(_mxArray);
 	size_t cols = mxGetN(_mxArray);
@@ -51,7 +51,7 @@ template<> void MxArrayWrapper<Eigen::VectorXd>::convertTo(Eigen::VectorXd& cont
 {
 	if(!mxIsNumeric(_mxArray)) throw std::runtime_error("Variable is not numeric");
 	if(mxIsEmpty(_mxArray)) throw std::runtime_error("Variable is empty!");
-	if(mxGetNumberOfDimensions(_mxArray) != 2) throw std::runtime_error("Variable is 2-dimensional");
+	if(mxGetNumberOfDimensions(_mxArray) != 2) throw std::runtime_error("Variable is not 2-dimensional");
 
 	size_t rows = mxGetM(_mxArray);
 	size_t cols = mxGetN(_mxArray);
@@ -80,9 +80,9 @@ double convertToScalar(const mxArray* mxArray)
 }
 // explicit template deduction
 template<> void MxArrayWrapper<double>::convertTo(double& content) { content = convertToScalar(_mxArray); }
-template<> void MxArrayWrapper<float>::convertTo(float& content) { content = static_cast<double>(convertToScalar(_mxArray)); }
-template<> void MxArrayWrapper<int>::convertTo(int& content) { content = static_cast<double>(convertToScalar(_mxArray)); }
-template<> void MxArrayWrapper<size_t>::convertTo(size_t& content) { content = static_cast<double>(convertToScalar(_mxArray)); }
+template<> void MxArrayWrapper<float>::convertTo(float& content) { content = static_cast<float>(convertToScalar(_mxArray)); }
+template<> void MxArrayWrapper<int>::convertTo(int& content) { content = static_cast<int>(convertToScalar(_mxArray)); }
+template<> void MxArrayWrapper<size_t>::convertTo(size_t& content) { content = static_cast<size_t>(convertToScalar(_mxArray)); }
 
 template<> void MxArrayWrapper<bool>::convertTo(bool& content)
 {

@@ -22,5 +22,6 @@ int main(int argc, char **argv){
 	testOpenClose();
 	testWriteRead();
 	testWriteEigen();
+	testWriteScalarVectors();
 	std::cout<<"Completed mat-file test"<<std::endl;
 }

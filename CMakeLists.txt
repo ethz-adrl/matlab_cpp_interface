@@ -103,6 +103,7 @@ include_directories(
   
 add_library(mxArrayWrapper
     src/internal/MxArrayWrapper.cpp
+    src/internal/MxArrayNDimWrapper.cpp
 )
 
 ## Declare a cpp library

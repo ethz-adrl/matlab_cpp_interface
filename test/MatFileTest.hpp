@@ -171,4 +171,70 @@ void testWriteEigen()
 	assert(file.close());
 }
 
+
+
+
+void testWriteScalarVectors()
+{
+	matlab::MatFile file;
+
+	assert(file.open("test.mat", matlab::MatFile::WRITE_COMPRESSED));
+	assert(file.isOpen());
+	assert(file.isWritable());
+
+	std::vector<double> a(10);
+	std::vector<float> b(3);
+	std::vector<size_t> c(5);
+	std::vector<int> d(12);
+
+	for (size_t i=0; i<d.size(); i++)
+	{
+		if (i<a.size()) { a[i] = i; }
+		if (i<b.size()) { b[i] = i; }
+		if (i<c.size()) { c[i] = i; }
+		if (i<d.size()) { d[i] = i; }
+	}
+
+	assert(file.put("a", a));
+	assert(file.put("b", b));
+	assert(file.put("c", c));
+	assert(file.put("d", d));
+
+	assert(file.close());
+
+	assert(file.open("test.mat", matlab::MatFile::READ));
+	assert(file.isOpen());
+	assert(!file.isWritable());
+
+	std::vector<double> a_test;
+	std::vector<float> b_test;
+	std::vector<size_t> c_test;
+	std::vector<int> d_test;
+
+	assert(file.get("a", a_test));
+	assert(file.get("b", b_test));
+	assert(file.get("c", c_test));
+	assert(file.get("d", d_test));
+
+	assert(a.size() == a_test.size());
+	assert(b.size() == b_test.size());
+	assert(c.size() == c_test.size());
+	assert(d.size() == d_test.size());
+
+	assert(a == a_test);
+	assert(b == b_test);
+	assert(c == c_test);
+	assert(d == d_test);
+
+	for (size_t i=0; i<d.size(); i++)
+	{
+		if (i<a_test.size()) { assert(a_test[i] == i); }
+		if (i<b_test.size()) { assert(b_test[i] == i); }
+		if (i<c_test.size()) { assert(c_test[i] == i); }
+		if (i<d_test.size()) { assert(d_test[i] == i); }
+	}
+
+	assert(file.close());
+}
+
 #endif /* MATFILETEST_HPP_ */

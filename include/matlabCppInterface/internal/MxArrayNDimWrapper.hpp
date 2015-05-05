@@ -122,6 +122,37 @@ void MxArrayNDimWrapper<ContentType, AllocatorType>::convertTo(std::vector<Conte
 	}
 }
 
+// helper to cast any scalar vector to a double vector
+template <typename ScalarType>
+std::vector<double> castToDoubleVector(const std::vector<ScalarType>& vector)
+{
+	return std::vector<double>(vector.begin(), vector.end());
+}
+
+// helper to cast any scalar vector from a double vector
+template <typename ScalarType>
+std::vector<ScalarType> castFromDoubleVector(const std::vector<double>& doubleVector)
+{
+	return std::vector<ScalarType>(doubleVector.begin(), doubleVector.end());
+}
+
+// helper for doubles, will be used by all scalar types
+void convertToDoubleVector(std::vector<double, std::allocator<double> >& content, mxArray* &mxArray);
+
+// helper for doubles, will be used by all scalar types
+void convertFromDoubleVector(const std::vector<double, std::allocator<double> >& content, mxArray* &mxArray);
+
+// explicit template deduction
+template<> void MxArrayNDimWrapper<double, std::allocator<double> >::convertFrom(const std::vector<double, std::allocator<double> >& content);
+template<> void MxArrayNDimWrapper<float, std::allocator<float> >::convertFrom(const std::vector<float, std::allocator<float> >& content);
+template<> void MxArrayNDimWrapper<int, std::allocator<int> >::convertFrom(const std::vector<int, std::allocator<int> >& content);
+template<> void MxArrayNDimWrapper<size_t, std::allocator<size_t> >::convertFrom(const std::vector<size_t, std::allocator<size_t> >& content);
+
+template<> void MxArrayNDimWrapper<double, std::allocator<double> >::convertTo(std::vector<double, std::allocator<double> >& content);
+template<> void MxArrayNDimWrapper<float, std::allocator<float> >::convertTo(std::vector<float, std::allocator<float> >& content);
+template<> void MxArrayNDimWrapper<int, std::allocator<int> >::convertTo(std::vector<int, std::allocator<int> >& content);
+template<> void MxArrayNDimWrapper<size_t, std::allocator<size_t> >::convertTo(std::vector<size_t, std::allocator<size_t> >& content);
+
 
 } // matlab
 
