@@ -82,7 +82,7 @@ find_package(Eigen REQUIRED)
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
    INCLUDE_DIRS include ${MATLAB_INCLUDE_DIR} ${EIGEN_INCLUDE_DIRS}
-   LIBRARIES matlabMatFile matlabEngine ${MATLAB_LIBRARIES}
+   LIBRARIES mxArrayWrapper matlabMatFile matlabEngine ${MATLAB_LIBRARIES}
 #  CATKIN_DEPENDS other_catkin_pkg
 #  DEPENDS system_lib
 )
