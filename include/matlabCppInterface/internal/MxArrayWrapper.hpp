@@ -11,6 +11,7 @@
 #include <type_traits>
 
 #include <Eigen/Core>
+#include <vector>
 
 // Matlab's mxArray stuff
 #include "matrix.h"

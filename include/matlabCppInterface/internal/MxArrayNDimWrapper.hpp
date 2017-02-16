@@ -9,6 +9,7 @@
 #define MXARRAYNDIMWRAPPER_HPP_
 
 #include <Eigen/Core>
+#include <vector>
 
 #include "matrix.h"
 
