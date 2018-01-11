@@ -6,12 +6,12 @@ project(matlab_cpp_interface)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS roscpp message_generation message_runtime cmake_modules)
 
-set(CMAKE_CXX_FLAGS "--std=c++11 -fPIC")
+set(CMAKE_CXX_FLAGS "-std=c++11 -fPIC")
 
 ## System dependencies are found with CMake's conventions
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 find_package(Matlab REQUIRED QUIET)
-find_package(Eigen REQUIRED)
+find_package(Eigen3 REQUIRED)
 find_package(Boost REQUIRED COMPONENTS thread)
 
 if(${MATLAB_FOUND})
@@ -82,7 +82,7 @@ if(${MATLAB_FOUND})
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-   INCLUDE_DIRS include ${MATLAB_INCLUDE_DIR} ${EIGEN_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS}
+   INCLUDE_DIRS include ${MATLAB_INCLUDE_DIR} ${EIGEN3_INCLUDE_DIR} ${Boost_INCLUDE_DIRS}
    LIBRARIES mxArrayWrapper matlabMatFile matlabEngine ${MATLAB_LIBRARIES}
 #  CATKIN_DEPENDS other_catkin_pkg
 #  DEPENDS system_lib
@@ -97,11 +97,11 @@ catkin_package(
 include_directories(
   include
   test
-  ${EIGEN_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIR}
   ${catkin_INCLUDE_DIRS}
   ${MATLAB_INCLUDE_DIR}
   )
-  
+
 add_library(mxArrayWrapper STATIC
     src/internal/MxArrayWrapper.cpp
     src/internal/MxArrayNDimWrapper.cpp
@@ -152,5 +152,5 @@ target_link_libraries(matlabROSTest
 
 else(${MATLAB_FOUND})
     message(WARNING "MATLAB NOT FOUND, WILL NOT COMPILE THIS PACKAGE")
-    catkin_package() 
+    catkin_package()
 endif(${MATLAB_FOUND})
