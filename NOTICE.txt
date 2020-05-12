@@ -1,0 +1,7 @@
+The matlab_cpp_interface package
+
+Copyright 2014-now Markus Giftthaler, Michael Neunert, Markus Stäuble, Hamza Merzic
+Copyright 2014-2018 ETH Zurich
+
+This software has been developed at the Agile & Dexterous Robotics Lab 
+at ETH Zurich.
